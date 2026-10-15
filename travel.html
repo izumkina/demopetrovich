@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light"/>
+<title>Эконометрика: декомпозиция факторов, вклады рекламы, планирование</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#f1f1f0;--panel:#fff;--ink:#1d1d24;--ink2:#3a3a44;--muted:#6e6e78;--faint:#9b9ba4;--line:#e3e3e1;--hair:#efefed;--accent:#3244c9;--accentSoft:#eef0fb;--green:#bfed90;--greenSoft:#ecf7e3;--greenInk:#3f6b22;--tab:#e6e6e2;--neg:#b23a3a;
+--g-base:#cdd5f5;--g-perf:#698946;--g-promo:#8696e5;--g-dem:#9eca71;--g-prod:#162062;--g-comp:#575760;--g-media:#3244c9;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
+*,*:before,*:after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:1.4;font-feature-settings:"tnum"}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:flex;min-height:100vh;background:linear-gradient(to right,#fff 212px,transparent 212px)}
+.side{width:212px;flex:none;background:#fff;border-right:1px solid var(--line);padding:22px 14px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.logo{font-size:21px;font-weight:600;color:var(--accent);letter-spacing:-.01em;padding:0 6px}
+.logo-sub{font-size:8.5px;font-weight:700;letter-spacing:.07em;white-space:nowrap;text-transform:uppercase;color:var(--faint);margin:20px 6px 10px}
+.nav{display:flex;gap:10px;align-items:flex-start;padding:10px 10px;border-radius:8px;margin-bottom:6px;border:0;background:none;width:100%;text-align:left}
+.nav b{display:block;font-size:12.5px;font-weight:600}
+.nav span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
+.nav svg{flex:none;margin-top:2px}
+.nav.on{background:var(--accent);color:#fff}
+.nav.on span{color:#d9ddf7}
+.nav:not(.on):hover{background:var(--hair)}
+.side-card{margin-top:16px;background:var(--greenSoft);border-radius:12px;padding:14px 14px}
+.side-card b{display:block;font-size:14px;font-weight:500;line-height:1.3}
+.side-card span{display:block;font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:0 6px;font-size:11px}
+.side-foot button{border:0;background:none;padding:0;display:flex;justify-content:space-between;color:var(--muted);text-align:left}
+.side-foot button.upd{color:var(--neg)}
+main{flex:1;min-width:0}
+.topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--line);font-size:11px;color:var(--muted)}
+#crumb{font-size:14px;font-weight:600;color:var(--ink)}
+#crumb .sl{color:var(--faint);font-weight:400;margin:0 4px}
+#crumb a{color:var(--accent);text-decoration:none}
+#crumb a:hover{text-decoration:underline}
+.status{display:flex;align-items:center;gap:6px}
+.status i{width:6px;height:6px;border-radius:50%;background:#5c9a2e;display:inline-block}
+.page{padding:22px 32px 40px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.kicker{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;font-weight:500;letter-spacing:-.015em;margin:8px 0 14px}
+.seg{display:inline-flex;background:var(--tab);border-radius:8px;padding:3px;gap:2px}
+.seg button{border:0;background:none;border-radius:6px;padding:6px 12px;font-size:11.5px;color:var(--ink2)}
+.seg button.on{background:#fff;color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.seg.sm button{padding:4px 9px;font-size:10.5px}
+.meta{font-size:10.5px;color:var(--muted);margin:10px 0 14px}
+.head-r{display:flex;flex-direction:column;align-items:flex-end;gap:16px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:7px 12px;font-size:11.5px;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:#cfcfd4}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.dates{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.dates input{border:1px solid var(--line);border-radius:6px;padding:5px 7px;background:#fff;font-size:11px}
+.q{width:15px;height:15px;border-radius:50%;border:1.3px solid #8a90c9;color:#5a62b8;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none;cursor:help;background:#fff;position:relative}
+.q[data-tip]:hover:after{content:attr(data-tip);position:absolute;left:50%;top:20px;transform:translateX(-50%);width:240px;background:#1d1d24;color:#fff;font-weight:400;font-size:11px;line-height:1.45;padding:8px 10px;border-radius:7px;z-index:30;white-space:normal;text-align:left}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi{background:#fff;border-radius:12px;padding:14px 16px 13px}
+.kpi.g{background:var(--green)}
+.kpi .l{font-size:10.5px;color:var(--ink2);display:flex;align-items:center;gap:5px}
+.kpi .v{font-size:26px;font-weight:400;letter-spacing:-.02em;margin:9px 0 6px;line-height:1}
+.kpi .v small{font-size:10px;color:var(--muted);margin-left:3px;letter-spacing:0}
+.kpi .s{font-size:10.5px;color:var(--muted)}
+.kpi.g .s{color:#4c5a3a}
+.card{background:#fff;border-radius:12px;padding:18px 20px;margin-bottom:12px;position:relative}
+.card h3{font-size:13.5px;font-weight:600;margin:0}
+.card .sub{font-size:10.5px;color:var(--muted);margin:3px 0 0}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.pill{font-size:9.5px;color:var(--muted);background:var(--hair);border:1px solid var(--line);border-radius:5px;padding:3px 7px;white-space:nowrap}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ctrl{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.sel{position:relative;display:inline-flex;align-items:center}
+.sel select{appearance:none;-webkit-appearance:none;border:1px solid #d7d7db;border-radius:6px;background:#fff;padding:6px 34px 6px 9px;font-size:11px;min-width:170px}
+.sel.grey select{background:var(--hair);border-color:var(--hair);min-width:300px}
+.sel:after{content:"";position:absolute;right:11px;top:50%;width:8px;height:8px;border-right:2px solid #222;border-bottom:2px solid #222;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.link{border:0;background:none;color:var(--accent);font-size:11px;padding:0;display:inline-flex;gap:5px;align-items:center}
+.link.grey{color:var(--muted);font-size:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--ink2)}
+.chip i{width:7px;height:7px;border-radius:1.5px;display:inline-block}
+.chip.off{opacity:.38}
+.chip.hl{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.note{font-size:10px;color:var(--muted);margin-top:9px}
+.chart{position:relative;width:100%}
+.chart svg{display:block;overflow:visible}
+.tag{font-size:10px;background:var(--hair);border-radius:5px;padding:3px 8px;color:var(--ink2);display:inline-block}
+.tags{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.strip{background:var(--greenSoft);border-radius:7px;padding:9px 12px;font-size:11px;margin-top:10px}
+.strip.warn{background:#fbf3df}
+.strip.bad{background:#fae8e6}
+.tip{position:fixed;z-index:50;pointer-events:none;background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:11px;box-shadow:0 6px 24px rgba(20,20,40,.12);min-width:180px;display:none}
+.tip .t{font-weight:600;margin-bottom:5px}
+.tip .r{display:flex;justify-content:space-between;gap:16px;line-height:1.6}
+.tip .r i{width:7px;height:7px;border-radius:1.5px;display:inline-block;margin-right:6px}
+details{font-size:11px}
+details summary{cursor:pointer;font-weight:500;list-style:none;display:flex;align-items:center;gap:7px}
+summary .grow{flex:1}
+details summary::-webkit-details-marker{display:none}
+details summary:before{content:"";border-left:5px solid #222;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s}
+details[open] summary:before{transform:rotate(90deg)}
+details .body{color:var(--muted);margin-top:8px;line-height:1.55;max-width:880px}
+.tbl-wrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:10.5px}
+th{font-weight:600;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{text-align:right;padding:5px 8px;border-bottom:1px solid var(--hair);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+.sumrow{display:flex;justify-content:space-between;align-items:center}
+.sumrow summary{font-size:11.5px;font-weight:600}
+/* planner */
+.pl-grid{display:grid;grid-template-columns:272px 1fr;gap:12px;align-items:start}
+.mplan{position:sticky;top:10px;background:#fff;border-radius:12px;padding:16px 10px 12px 16px;max-height:calc(100vh - 20px);display:flex;flex-direction:column}
+.mplan-h{display:flex;justify-content:space-between;align-items:flex-start;padding-right:6px;margin-bottom:12px}
+.mplan-list{overflow-y:auto;padding-right:8px;scrollbar-width:thin;scrollbar-color:#a9a9ae #e9e9ec;display:flex;flex-direction:column;gap:10px}
+.ch{border:1.5px solid var(--line);border-radius:10px;padding:10px 11px 9px}
+.ch.on{border-color:var(--accent)}
+.ch-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ch-name{font-size:12px;font-weight:500;border:0;background:none;padding:0;text-align:left;line-height:1.3}
+.ch-name:hover{color:var(--accent)}
+.ch-tag{font-size:8.5px;color:var(--muted);background:var(--hair);border-radius:4px;padding:2px 5px;flex:none}
+.ch-in{display:flex;gap:6px;margin-top:8px;align-items:center}
+.ch-in input[type=text]{flex:1;min-width:0;border:1px solid #d9d9dd;border-radius:6px;padding:7px 9px;font-size:12px}
+.ch-mode{border:1px solid #d9d9dd;background:#fff;border-radius:6px;padding:6px 7px;font-size:9.5px;color:var(--ink2)}
+.ch-mode:disabled{color:#c2c2c7;cursor:default}
+input[type=range]{width:100%;accent-color:var(--accent);margin:8px 0 2px;height:14px}
+.ch-cap{display:flex;justify-content:space-between;gap:8px;font-size:8.5px;color:var(--faint);line-height:1.35}
+.ch-res{background:var(--hair);border-radius:7px;padding:7px 8px;margin-top:7px}
+.ch-res .lab{font-size:9px;font-weight:600;display:flex;align-items:center;gap:5px}
+.ch-res .rr{display:flex;align-items:center;gap:8px}
+.ch-res input[type=number]{width:54px;border:1px solid #d9d9dd;border-radius:5px;padding:4px 6px;font-size:11px;background:#fff}
+.ch-set{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:9.5px;font-weight:600;color:var(--accent);border:0;background:none;width:100%;padding:0}
+.ch-setbody{margin-top:7px;font-size:10px;color:var(--muted);display:grid;gap:6px}
+.ch-setbody input{width:100%;border:1px solid #d9d9dd;border-radius:5px;padding:5px 7px;font-size:11px;margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cchip{border:1px solid #c7ccef;background:var(--accentSoft);color:#2a37a8;border-radius:6px;padding:5px 9px;font-size:10.5px}
+.cchip.no{background:#fff;border-color:var(--line);color:var(--ink2)}
+.period{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:12px}
+.period label{font-size:10.5px;font-weight:500;display:flex;gap:5px;align-items:center;margin-bottom:5px}
+.period input{width:100%;border:1px solid #d6d6da;border-radius:6px;padding:7px 9px;font-size:11px;background:#fff}
+.legend2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 18px;margin-top:14px}
+.legend2 .it{font-size:10px;line-height:1.35}
+.legend2 .it b{font-weight:500;display:flex;gap:6px;align-items:center}
+.legend2 .it b i{width:7px;height:7px;border-radius:1.5px;flex:none}
+.legend2 .it span{color:var(--muted);display:block;padding-left:13px}
+.legend2 .it.on b{color:var(--accent)}
+.ext{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:12px;max-width:900px}
+.ext label{font-size:10.5px;color:var(--ink2);display:flex;justify-content:space-between}
+.scen-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.scen-row input{flex:1;min-width:220px;border:1px solid #d6d6da;border-radius:6px;padding:8px 10px;font-size:11px}
+.saved{margin-top:10px;font-size:10.5px;color:var(--muted)}
+.saved .it{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--hair);color:var(--ink)}
+.saved .it span{flex:1}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1d1d24;color:#fff;padding:9px 14px;border-radius:8px;font-size:11.5px;z-index:60;display:none}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}.period{grid-template-columns:repeat(2,1fr)}.pl-grid{grid-template-columns:1fr}.mplan{position:static;max-height:520px}}
+@media (max-width:760px){.app{background:none}.side{display:none}.page{padding:16px}.topbar{padding:0 16px}.kpis{grid-template-columns:1fr}.ext{grid-template-columns:1fr}.mob-nav{display:flex!important}}
+.mob-nav{display:none;gap:6px;padding:10px 16px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div id="travel"><div class="app">
+<aside class="side">
+  <div class="logo">Эконометрика</div>
+  <div class="logo-sub">Факторы · реклама · план</div>
+  <button class="nav on" data-page="dash"><svg width="14" height="12" viewBox="0 0 14 12"><rect x="0" y="0" width="14" height="12" rx="1.5" fill="currentColor"/></svg><div><b>Дашборд</b><span>Результаты и факторы</span></div></button>
+  <button class="nav" data-page="plan"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M2 11 L10 3 M5 3 H10 V8" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg><div><b>Планировщик</b><span>Медиаплан и прогноз</span></div></button>
+  <div class="side-foot"><button id="help">Справка <span>↗</span></button><button id="upd" class="upd">Обновить данные <span>↻</span></button></div>
+</aside>
+<main>
+  <div class="topbar"><span id="crumb">Эконометрика <span class="sl">/</span> Тревел сегмент</span><span class="status"><i></i><span id="stat">Расчёты проверены · 3 модели</span></span></div>
+  <div class="mob-nav"><button class="btn" data-page="dash">Дашборд</button><button class="btn" data-page="plan">Планировщик</button></div>
+
+  <section class="page" id="page-dash">
+    <div class="head">
+      <div>
+        <div class="kicker">Дашборд</div>
+        <h1>Результаты и вклад факторов</h1>
+        <div class="seg" id="dtabs"><button>Направление 1</button><button>Направление 2</button><button>Направление 3</button></div>
+        <div class="meta" id="dmeta"></div>
+      </div>
+      <div class="head-r">
+        <button class="btn" id="dcsv">Скачать CSV <span>↓</span></button>
+        <div class="dates"><span class="q" data-tip="Период для всех блоков дашборда. Даты прилипают к понедельнику">?</span>С <input type="date" id="dfrom"> — По <input type="date" id="dto"> <button class="btn" id="dreset" title="Вернуть весь период" style="padding:4px 8px">↺</button></div>
+      </div>
+    </div>
+    <div class="kpis" id="dk"></div>
+
+    <div class="card">
+      <div class="card-top">
+        <div><h3>Как складывается результат</h3><div class="sub">Положительные и отрицательные вклады. Можно выделить несколько факторов, повторное нажатие снимает выделение</div></div>
+        <div style="display:flex;gap:8px;align-items:center"><span class="q" data-tip="Недели агрегируются в месяцы и кварталы по дате понедельника">?</span><div class="seg sm" id="dper"><button data-p="w">Недели</button><button data-p="m">Месяцы</button><button data-p="q">Кварталы</button></div></div>
+      </div>
+      <div class="ctrl" style="justify-content:space-between">
+        <div style="display:flex;gap:8px;align-items:center"><span class="sel"><select id="dfocus" aria-label="Фактор"></select></span><span class="q" data-tip="Выбор фактора подсвечивает его на графике и в барах">?</span></div>
+        <button class="link" id="dshowgroups">Настроить группы ↓ <span class="q" style="border-color:#8a90c9">?</span></button>
+        <div style="display:flex;gap:8px;align-items:center"><span class="sel"><select id="dgrp" aria-label="Группировка" style="min-width:200px"><option value="groups">Группы факторов</option><option value="own">Своя реклама и внешние</option><option value="factors">Все факторы отдельно</option></select></span><span class="q" data-tip="Как объединять факторы на графике и в барах">?</span></div>
+        <button class="link grey" id="dzoomreset">Сбросить выделение <span class="q">?</span></button>
+      </div>
+      <div id="dgroups" class="legend2 hidden" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr));font-size:10px"></div>
+      <div class="chart" id="darea" style="margin-top:10px"></div>
+      <div class="legend" id="dlegend"></div>
+      <div class="note">Протяните по графику, чтобы приблизить период. Масштаб можно вернуть кнопкой ↺ у дат. Факт показан графитовой линией, расчёт синей пунктирной</div>
+    </div>
+
+    <div class="row2">
+      <div class="card"><div class="card-top"><div><h3>Вклад за период</h3><div class="sub">Группы, которые формируют модельный результат</div></div><span class="pill">брон.</span></div><div class="chart" id="dbars" style="margin-top:14px"></div></div>
+      <div class="card"><div class="card-top"><div><h3>Почему изменился результат</h3><div class="sub" id="dcmp"></div></div></div><div class="chart" id="ddelta" style="margin-top:14px"></div><div class="strip" id="ddeltasum"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><div><h3>Отклик рекламного канала</h3><div class="sub">Отклик и перенос эффекта при текущих условиях</div></div><span class="pill">Условная кривая</span></div>
+      <div class="ctrl"><span class="sel grey"><select id="dch" aria-label="Канал"></select></span><span class="q" data-tip="Канал из медийной группы. Кривая считается для выбранного направления и периода">?</span></div>
+      <div class="tags" id="dchtags"></div>
+      <div class="row2" style="margin-top:14px;gap:28px">
+        <div><div style="font-size:11px;font-weight:600;display:flex;gap:6px;align-items:center">Отклик на объём <span class="q" data-tip="Сколько бронирований даёт канал за период при разном объёме, остальные условия фиксированы">?</span></div><div class="sub" style="font-size:10px;color:var(--muted);margin:2px 0 6px">Изменение бронирований при прочих фиксированных условиях</div><div class="chart" id="dresp"></div><div class="note">Кривая учитывает профиль по неделям, лаги и общий отклик составных каналов. Текущая точка показывает исходный объём</div>
+          <details style="margin-top:10px"><summary>О показателе и расчёте</summary><div class="body">Отклик построен по модели выбранного направления: объём канала по неделям проходит через перенос эффекта (adstock), затем через кривую насыщения. Значение на кривой показывает вклад канала за выбранный период при пропорциональном изменении объёма во всех неделях. Для каналов без объёма в периоде кривая условная и строится от типичного флайта</div></details></div>
+        <div><div style="font-size:11px;font-weight:600;display:flex;gap:6px;align-items:center">Перенос эффекта <span class="q" data-tip="Как дополнительный объём в первую неделю распределяет эффект по следующим неделям">?</span></div><div class="sub" id="dcarrysub" style="font-size:10px;color:var(--muted);margin:2px 0 6px"></div><div class="chart" id="dcarry"></div><div class="note">Условный эффект импульса по доступным неделям истории. За правой границей истории эффект не рассчитывается</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:14px 20px"><details id="dtbldet"><summary><span class="grow" style="font-weight:600">Таблица выбранного среза</span><span id="dtblcount" style="font-weight:400;color:var(--muted);font-size:10px"></span></summary><div class="tbl-wrap" id="dtbl"></div></details></div>
+  </section>
+
+  <section class="page hidden" id="page-plan">
+    <div class="head">
+      <div>
+        <div class="kicker">Планировщик</div>
+        <h1>Медиаплан и прогноз бронирований</h1>
+        <div class="seg" id="ptabs"><button>Направление 1</button><button>Направление 2</button><button>Направление 3</button><button>Суммарно</button></div>
+      </div>
+      <div class="head-r"><button class="btn" id="pcsv">Скачать CSV <span>↓</span></button></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-top"><div><h3>Период планирования</h3><div class="sub">Недельный медиаплан для трёх направлений. Общие расходы учитываются один раз</div></div><div class="seg sm" id="pmode"><button data-m="future">Будущий период</button><button data-m="hist">На истории</button></div></div>
+      <div class="period">
+        <div><label>Начало недели <span class="q" data-tip="Дата прилипнет к понедельнику">?</span></label><input type="date" id="ps"></div>
+        <div><label>Последняя неделя <span class="q" data-tip="Понедельник последней недели периода, от 4 до 26 недель">?</span></label><input type="date" id="pe"></div>
+        <div><label>Исторический профиль: с <span class="q" data-tip="Отрезок истории, по которому объём раскладывается по неделям">?</span></label><input type="date" id="phf"></div>
+        <div><label>Исторический профиль: по <span class="q" data-tip="Конец отрезка истории. В режиме «На истории» прогноз строится на последних 13 неделях до этой даты">?</span></label><input type="date" id="pht"></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:12px"><button class="btn pri" id="papply">Применить период</button><span class="note" style="margin:0" id="pinfo"></span></div>
+      <div class="note">При изменении дат заданные объёмы сохраняются. Ручное недельное распределение будет заменено историческим профилем</div>
+      <details style="margin-top:10px"><summary>Условия прогноза</summary><div class="body">База и сезонность берутся из моделей трёх направлений, тренды продукта и конкурентов фиксируются на уровне последнего года. Объём каждого канала раскладывается по неделям по историческому профилю, проходит через перенос эффекта и кривую насыщения. Результативность к истории масштабирует отдачу канала, внешние условия меняют базу. Эффект, который переносится за границу периода, в прогноз периода не входит и показан отдельно в потенциале следующего шага</div></details>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;gap:10px;align-items:center;font-size:11px"><b style="font-weight:600">Каналы в плане</b><span class="q" data-tip="Отмеченные каналы попадают в медиаплан и прогноз">?</span><button class="link" id="pall" style="color:var(--ink)">Все</button><button class="link" id="pnone" style="color:var(--ink)">Ни одного</button></div>
+      <div class="chips" id="pchips"></div>
+      <div class="note" id="pchipnote"></div>
+    </div>
+
+    <div class="pl-grid">
+      <div class="mplan">
+        <div class="mplan-h"><div><h3 style="font-size:13.5px;margin:0">Медиаплан</h3><div class="sub" style="font-size:10px;color:var(--muted)">Объёмы и результативность каналов</div></div><button class="btn" id="preset" style="padding:5px 9px;font-size:10.5px;font-weight:600">Сбросить</button></div>
+        <div class="mplan-list" id="pcards"></div>
+      </div>
+      <div>
+        <div class="kpis" id="pk"></div>
+        <div class="card"><h3>Прогноз бронирований по неделям</h3><div class="sub" id="plinesub"></div><div class="chart" id="pline" style="margin-top:12px"></div><div class="tags" id="plinechips"></div></div>
+        <div class="card"><h3>Эффект каналов</h3><div class="sub">Распределение совместного эффекта каналов</div><div style="display:flex;justify-content:center;margin-top:6px"><div class="chart" id="pdonut" style="width:260px"></div></div><div class="note" id="pdonutnote"></div><div class="legend2" id="pdonutleg"></div><div class="note" id="pdonutfoot"></div></div>
+        <div class="card"><h3>Эффект каналов по неделям</h3><div class="sub">Вклад без повторного учёта общего эффекта</div><div class="chart" id="parea" style="margin-top:12px"></div><div class="note">Каналы складываются в общий эффект. База и внешние условия показаны отдельно в прогнозе бронирований</div></div>
+        <div class="card" style="padding:14px 20px"><details><summary style="font-weight:600">Недельный результат</summary><div class="tbl-wrap" id="pweektbl"></div></details></div>
+        <div class="card" id="pstep"><h3>Дополнительный эффект канала</h3><div class="sub">Отклик канала, выбранного в медиаплане слева</div>
+          <div class="row2" style="margin-top:14px;gap:28px">
+            <div><div style="font-size:11px;font-weight:600">Отклик канала</div><div class="sub" id="prespsub" style="font-size:10px;color:var(--muted);margin:3px 0 6px"></div><div class="chart" id="presp"></div><div class="note">Точку можно перемещать. При изменении объёма остальные каналы сохраняют свои настройки</div></div>
+            <div><div style="font-size:11px;font-weight:600">Потенциал следующего шага</div><div class="strip" id="plight"></div><div style="font-size:10.5px;margin:9px 0 4px" id="pstepnote"></div><div class="chart" id="pstepch"></div><div class="note">Светофор сравнивает отдачу следующего шага со средней отдачей канала в текущем медиаплане. Это оценка насыщения без учёта маржи и стоимости закупки</div>
+              <details style="margin-top:8px"><summary>Границы светофора</summary><div class="body">Зелёный: следующий шаг приносит не меньше 55% средней отдачи канала. Жёлтый: от 30 до 55%. Красный: меньше 30%, дополнительный объём почти не добавляет бронирований</div></details></div>
+          </div></div>
+        <div class="card" style="padding:14px 20px"><details><summary style="font-weight:600">Внешние условия</summary><div class="body" style="color:var(--muted)">Поправки к базе прогноза. Своя реклама считается отдельно в медиаплане</div>
+          <div class="ext" id="pext">
+            <div><label>Спрос и макроусловия <b data-v="dem"></b></label><input type="range" min="-30" max="30" step="1" data-k="dem"></div>
+            <div><label>Продукт и события <b data-v="prod"></b></label><input type="range" min="-30" max="30" step="1" data-k="prod"></div>
+            <div><label>Конкуренты <b data-v="comp"></b></label><input type="range" min="-30" max="30" step="1" data-k="comp"></div>
+          </div></details></div>
+        <div class="card"><h3>Сценарии</h3><div class="sub">Сохранённые сценарии остаются в этом браузере. JSON можно перенести на другой компьютер</div>
+          <div class="scen-row"><input id="pname" placeholder="Название сценария" aria-label="Название сценария"><button class="btn pri" id="psave">Сохранить</button><button class="btn" id="pjson">Скачать JSON</button><button class="btn" id="popen">Открыть JSON</button><button class="btn" id="pcsv2">Скачать CSV</button><input type="file" id="pfile" accept=".json,application/json" class="hidden"></div>
+          <div class="saved" id="psaved"></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast"></div>
+</div>
+<script>
+(function () {
+// ===== Демо-данные: три направления, 104 недели (прошлый и текущий год) =====
+const RNG = (() => { let s = 20261015; return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; })();
+const gauss = () => { let u = 0, v = 0; while (!u) u = RNG(); while (!v) v = RNG(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const DAY = 864e5;
+const MON = ["янв.", "февр.", "мар.", "апр.", "мая", "июн.", "июл.", "авг.", "сент.", "окт.", "нояб.", "дек."];
+const MONN = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
+const W0 = Date.UTC(2025, 8, 1);            // понедельник, первая неделя текущего года модели
+const NW = 52;
+const wDate = i => new Date(W0 + (i - NW) * 7 * DAY); // i: 0..103, текущий год 52..103
+const pad2 = n => String(n).padStart(2, "0");
+const dLong = d => pad2(d.getUTCDate()) + " " + MON[d.getUTCMonth()] + " " + d.getUTCFullYear() + " г.";
+const dAxis = d => pad2(d.getUTCDate()) + " " + MON[d.getUTCMonth()] + " " + String(d.getUTCFullYear()).slice(2) + " г.";
+const dShortNoY = d => pad2(d.getUTCDate()) + " " + MON[d.getUTCMonth()];
+const dDot = d => pad2(d.getUTCDate()) + "." + pad2(d.getUTCMonth() + 1) + "." + d.getUTCFullYear();
+const dISO = d => d.getUTCFullYear() + "-" + pad2(d.getUTCMonth() + 1) + "-" + pad2(d.getUTCDate());
+const parseISO = s => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
+
+const GROUPS = [
+  { k: "base", n: "База", c: "#cdd5f5", f: ["Базовый уровень"] },
+  { k: "perf", n: "Performance", c: "#698946", f: ["Метапоиск", "Партнёрский канал Affiliate", "Поиск: бренд", "Поиск: небренд", "CPA-сети", "CPI: установки"] },
+  { k: "promo", n: "Промо", c: "#8696e5", f: ["Промокоды", "Кешбэк и баллы"] },
+  { k: "dem", n: "Спрос и макроусловия", c: "#9eca71", f: ["Сезонность спроса", "Курс валют", "Праздники и выходные"] },
+  { k: "prod", n: "Продукт и события", c: "#162062", f: ["Обновления приложения", "Ассортимент и цены", "Внешние события"] },
+  { k: "comp", n: "Конкуренты", c: "#575760", f: ["Медиаактивность конкурентов", "Ценовая активность конкурентов"] },
+  { k: "media", n: "Медиа", c: "#3244c9", f: ["ТВ и Smart TV", "Онлайн-видео", "Наружная реклама и Indoor", "Баннерная реклама", "Блогеры", "Аудиореклама"] }
+];
+const OWN = ["perf", "promo", "media"];
+
+const DIRS = [
+  { n: "Направление 1", B: 4100, perf: 5300, promo: 1250, dem: 2300, demAmp: .55, prod: [450, 26], comp: [-430, -9], media: 2250, dev: .0021,
+    prev: { perf: .9, promo: .8, dem: 1.22, prod: .3, comp: .93, media: 1.07 } },
+  { n: "Направление 2", B: 15800, perf: 12600, promo: 2500, dem: 9900, demAmp: .35, prod: [-1400, -150], comp: [-1150, -12], media: 4900, dev: -.0074,
+    prev: { perf: .93, promo: .72, dem: .87, prod: .58, comp: .94, media: 1.09 } },
+  { n: "Направление 3", B: 5500, perf: 1750, promo: 380, dem: 520, demAmp: 1.7, prod: [1250, 9], comp: [-640, -6], media: 720, dev: .0128,
+    prev: { perf: .88, promo: .76, dem: 1.35, prod: .41, comp: .9, media: .8 } }
+];
+
+const cosS = (ts, peak) => Math.cos(2 * Math.PI * (ts - peak) / 52);
+// медиафлайты года: недели от 1 сентября
+const FLIGHTS = [[4, 11, 1], [22, 27, .75], [33, 41, 1.1], [45, 50, .9]];
+const flightAt = ts => { for (const [a, b, w] of FLIGHTS) if (ts >= a && ts <= b) return w; return 0; };
+const mediaShape = (() => { const arr = []; let ad = 0; for (let k = 0; k < 104; k++) { const ts = k % 52; ad = flightAt(ts) + .55 * ad; arr.push(ad); } return arr; })();
+const promoBurst = ts => 1 + (ts === 11 || ts === 12 ? 1.15 : 0) + (ts === 17 ? .5 : 0) + (ts === 27 || ts === 28 ? .6 : 0) + (ts === 40 ? .4 : 0);
+
+function groupValue(dir, k, i, noise) {
+  const ts = i % 52, cur = i >= NW, tc = cur ? i - NW : i; const pm = cur ? 1 : 1;
+  const P = cur ? {} : dir.prev;
+  const m = key => (cur ? 1 : P[key]);
+  const n = 1 + noise * .03;
+  switch (k) {
+    case "base": return dir.B;
+    case "perf": return dir.perf * (1 + .1 * cosS(ts, 46)) * n * m("perf");
+    case "promo": return dir.promo * promoBurst(ts) * (1 + noise * .05) * m("promo");
+    case "dem": return dir.dem * (1 + dir.demAmp * cosS(ts, 46)) * m("dem") + (cur ? 0 : 0);
+    case "prod": return (dir.prod[0] + dir.prod[1] * tc) * m("prod");
+    case "comp": return (dir.comp[0] + dir.comp[1] * tc) * (1 + noise * .06) * m("comp");
+    case "media": return dir.media * (.18 + mediaShape[i] * .62) * m("media");
+  }
+  return 0 * pm;
+}
+
+// доли факторов внутри группы: медленно меняются по году
+function factorShares(g, ts) {
+  const n = g.f.length; if (n === 1) return [1];
+  const w = g.f.map((_, j) => (1 + j * .35) ** -1 * (1 + .28 * Math.sin(2 * Math.PI * (ts + j * 9 + g.k.length * 3) / 52)));
+  const s = w.reduce((a, b) => a + b, 0); return w.map(x => x / s);
+}
+
+const DASH = DIRS.map(dir => {
+  const weeks = [];
+  for (let i = 0; i < 104; i++) {
+    const g = {}; let model = 0;
+    for (const G of GROUPS) { const v = groupValue(dir, G.k, i, gauss()); g[G.k] = v; model += v; }
+    const f = {};
+    for (const G of GROUPS) { const sh = factorShares(G, i % 52); G.f.forEach((fn, j) => f[fn] = g[G.k] * sh[j]); }
+    weeks.push({ i, d: wDate(i), g, f, model, fact: model * (1 + .028 * gauss()) });
+  }
+  // доводим отклонение факта текущего года до заданного
+  const cur = weeks.slice(NW); const sm = cur.reduce((a, w) => a + w.model, 0), sf = cur.reduce((a, w) => a + w.fact, 0);
+  const k = sm * (1 + dir.dev) / sf; cur.forEach(w => w.fact *= k);
+  return weeks;
+});
+
+// ===== Каналы для блока «Отклик рекламного канала» на дашборде =====
+const DCH = [
+  { n: "Онлайн-видео", lam: .55, vol: 1.15e6, flight: [1, 1, 1], sat: .55, eff: [.08, .07, .06] },
+  { n: "Smart TV", lam: .6, vol: 1.0e6, flight: [1, .8, 1], sat: .7, eff: [.06, .08, .04] },
+  { n: "ТВ", lam: .7, vol: 0, flight: [0, 0, 0], sat: 1, eff: [.08, .09, .05] },
+  { n: "Наружная реклама", lam: .65, vol: 1.6e6, flight: [.6, 0, 1.2], sat: 1.1, eff: [.05, .05, .03] },
+  { n: "Баннерная реклама", lam: .3, vol: 4.6e5, flight: [1, 1, 1], sat: .9, eff: [.02, .02, .02] },
+  { n: "Блогеры — просмотры", lam: .5, vol: 1.8e4, flight: [1, 1, 0], sat: .8, eff: [.03, .02, .02] },
+  { n: "Indoor", lam: .5, vol: 2.4e5, flight: [0, 1, 1], sat: .9, eff: [.015, .01, .02] },
+  { n: "Аудиореклама", lam: .45, vol: 3.1e5, flight: [0, 0, 1], sat: .6, eff: [.015, .015, .01] },
+  { n: "Реклама на маркетплейсах", lam: .25, vol: 3.0e5, flight: [1, 1, 1], sat: 1.3, eff: [.03, .03, .02] },
+  { n: "Промостраницы", lam: .2, vol: 0, flight: [0, 0, 0], sat: 1, eff: [.01, .01, .01] }
+];
+
+// ===== Утилиты интерфейса =====
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const nf = v => Math.round(v).toLocaleString("ru-RU");
+const sg = v => (v > 0.5 ? "+" : v < -0.5 ? "−" : "") + nf(Math.abs(v));
+const pctf = (v, d = 2) => (v >= 0 ? "+" : "−") + Math.abs(v * 100).toFixed(d).replace(".", ",") + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const UNIT = "брон.";
+function niceTicks(lo, hi, n = 5) {
+  if (hi === lo) hi = lo + 1;
+  const span = hi - lo, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= step0) || 10 * mag;
+  const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step, t = [];
+  for (let v = a; v <= b + step * .001; v += step) t.push(Math.round(v / step) * step);
+  return t;
+}
+const tip = (() => { let el; return {
+  show(html, x, y) { el = el || $("#tip"); el.innerHTML = html; el.style.display = "block"; const r = el.getBoundingClientRect(); let L = x + 16, T = y + 12; if (L + r.width > innerWidth - 8) L = x - r.width - 16; if (T + r.height > innerHeight - 8) T = innerHeight - r.height - 8; el.style.left = L + "px"; el.style.top = T + "px"; },
+  hide() { if (el) el.style.display = "none"; } }; })();
+function toast(t) { const el = $("#toast"); el.textContent = t; el.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(() => el.style.display = "none", 2600); }
+let DL = null;
+(async () => { try { if (window.claude && window.claude.use) DL = await window.claude.use("downloads"); } catch (e) { DL = null; } })();
+async function saveFile(name, data) {
+  if (DL) { try { await DL.save({ filename: name, data }); } catch (e) { if (e && e.code === "declined") return; toast("Файл сейчас недоступен для сохранения"); } return; }
+  try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data], { type: "text/plain" })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); } catch (e) { toast("Файл сейчас недоступен для сохранения"); }
+}
+const csvOf = rows => rows.map(r => r.map(v => typeof v === "number" ? String(Math.round(v)) : '"' + String(v).replace(/"/g, '""') + '"').join(";")).join("\n");
+
+// ===== Простые SVG-графики =====
+function svgEl(w, h, inner) { return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,Arial,sans-serif">${inner}</svg>`; }
+const pathOf = pts => pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+
+// линия/кривые: series [{pts:[[x,y]], color, dash, width}], оси числовые
+function lineChart(el, o) {
+  const W = Math.max(280, el.clientWidth), H = o.h || 160, L = o.left ?? 44, R = 10, T = o.yTitle ? 20 : 12, B = o.xTitle ? 34 : 22;
+  const xs = o.series.flatMap(s => s.pts.map(p => p[0])), ys = o.series.flatMap(s => s.pts.map(p => p[1]));
+  const x0 = o.xmin ?? Math.min(...xs), x1 = o.xmax ?? Math.max(...xs);
+  const yt = niceTicks(o.ymin ?? Math.min(0, ...ys), o.ymax ?? Math.max(...ys, 1) * 1.04, o.yticks || 4);
+  const y0 = yt[0], y1 = yt[yt.length - 1];
+  const sx = x => L + (W - L - R) * (x - x0) / ((x1 - x0) || 1), sy = y => T + (H - T - B) * (1 - (y - y0) / ((y1 - y0) || 1));
+  let s = "";
+  yt.forEach(v => { s += `<line x1="${L}" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="${v === 0 ? "#cfcfd3" : "#eeeeec"}"/><text x="${L - 8}" y="${sy(v) + 3}" font-size="8.5" fill="#8b8b94" text-anchor="end">${nf(v)}</text>`; });
+  if (o.yTitle) s += `<text x="${L - 8}" y="${T - 10}" font-size="8" fill="#8b8b94" text-anchor="end">${o.yTitle}</text>`;
+  (o.xticks || []).forEach(t => { s += `<text x="${sx(t.x)}" y="${H - B + 13}" font-size="8" fill="#8b8b94" text-anchor="middle">${t.l}</text>`; });
+  if (o.xTitle) s += `<text x="${(L + W - R) / 2}" y="${H - 3}" font-size="8" fill="#8b8b94" text-anchor="middle">${o.xTitle}</text>`;
+  if (o.vline != null) s += `<line x1="${sx(o.vline)}" x2="${sx(o.vline)}" y1="${T}" y2="${H - B}" stroke="#8a90c9" stroke-dasharray="2 2"/>`;
+  if (o.vlineLabel) s += `<text x="${sx(o.vline) + 4}" y="${T + 6}" font-size="8" fill="#8b8b94">${o.vlineLabel}</text>`;
+  o.series.forEach(se => { s += `<path d="${pathOf(se.pts.map(p => [sx(p[0]), sy(p[1])]))}" fill="none" stroke="${se.color}" stroke-width="${se.width || 1.4}" ${se.dash ? `stroke-dasharray="${se.dash}"` : ""} stroke-linejoin="round"/>`; });
+  (o.points || []).forEach(p => { s += `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="${p.r || 4}" fill="${p.color || "#3244c9"}" stroke="#fff" stroke-width="1.5"/>`; });
+  s += `<rect class="hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent"/>`;
+  el.innerHTML = svgEl(W, H, s);
+  return { sx, sy, W, H, L, R, T, B, x0, x1, inv: px => x0 + (px - L) / (W - L - R) * (x1 - x0) };
+}
+
+// горизонтальные бары с отрицательными значениями
+function hbars(el, rows, o = {}) {
+  const W = Math.max(320, el.clientWidth), rh = 19, T = 6, B = 22, H = T + rows.length * rh + B;
+  const LB = Math.min(150, W * .2), RV = 64, L = LB + 14, R = RV;
+  const vals = rows.map(r => r.v); const t = niceTicks(Math.min(0, ...vals), Math.max(0, ...vals), 4);
+  const a = t[0], b = t[t.length - 1], sx = v => L + (W - L - R) * (v - a) / ((b - a) || 1);
+  let s = "";
+  t.forEach(v => { s += `<line x1="${sx(v)}" x2="${sx(v)}" y1="${T - 2}" y2="${H - B + 2}" stroke="${v === 0 ? "#cfcfd3" : "#efefed"}"/><text x="${sx(v)}" y="${H - 6}" font-size="8" fill="#8b8b94" text-anchor="middle">${nf(v)}</text>`; });
+  rows.forEach((r, i) => {
+    const y = T + i * rh, x = Math.min(sx(0), sx(r.v)), w = Math.max(r.v === 0 ? 0 : 1, Math.abs(sx(r.v) - sx(0)));
+    const op = o.dim && o.dim(r) ? .28 : 1;
+    s += `<g opacity="${op}" data-k="${r.k}"><text x="${LB}" y="${y + rh / 2 + 3}" font-size="9" fill="#3a3a44" text-anchor="end">${esc(r.n)}</text>`;
+    s += `<rect x="${x}" y="${y + 4}" width="${w}" height="${rh - 8}" rx="1.5" fill="${r.c}"/>`;
+    s += `<text x="${W - 4}" y="${y + rh / 2 + 3}" font-size="8.5" fill="#3a3a44" text-anchor="end">${nf(r.v)}</text>`;
+    s += `<rect x="0" y="${y}" width="${W}" height="${rh}" fill="transparent" class="bh" data-i="${i}"/></g>`;
+  });
+  el.innerHTML = svgEl(W, H, s);
+  $$(".bh", el).forEach(n => {
+    const r = rows[+n.dataset.i];
+    n.addEventListener("mousemove", e => tip.show(`<div class="t">${esc(r.n)}</div><div class="r"><span>${o.label || "Вклад"}</span><b>${o.signed ? sg(r.v) : nf(r.v)} ${UNIT}</b></div>${r.share != null ? `<div class="r"><span>Доля в расчёте</span><b>${(r.share * 100).toFixed(1).replace(".", ",")}%</b></div>` : ""}`, e.clientX, e.clientY));
+    n.addEventListener("mouseleave", tip.hide);
+    if (o.onClick) n.addEventListener("click", () => o.onClick(r));
+  });
+}
+
+// ===== Дашборд: результаты и вклад факторов =====
+const DS = { dir: 0, a: NW, b: 103, per: "w", grp: "groups", hl: new Set(), zoom: null, ch: "Онлайн-видео", showGroups: false };
+const OWNC = { base: "#cdd5f5", own: "#3244c9", ext: "#9eca71" };
+function shade(hex, t) { const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = n >> 8 & 255, b = n & 255; const m = t > 0 ? 255 : 0, k = Math.abs(t); r = Math.round(r + (m - r) * k); g = Math.round(g + (m - g) * k); b = Math.round(b + (m - b) * k); return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+function items() {
+  if (DS.grp === "own") return [
+    { k: "base", n: "База", c: OWNC.base, v: w => w.g.base },
+    { k: "ext", n: "Внешние факторы", c: OWNC.ext, v: w => w.g.dem + w.g.prod + w.g.comp },
+    { k: "own", n: "Своя реклама", c: OWNC.own, v: w => w.g.perf + w.g.promo + w.g.media }];
+  if (DS.grp === "factors") return GROUPS.flatMap(G => G.f.map((fn, j) => ({ k: fn, n: fn, c: G.f.length === 1 ? G.c : shade(G.c, (j % 2 ? .28 : -.12) * (1 + j * .25) * (G.k === "prod" || G.k === "comp" ? .9 : 1)), v: w => w.f[fn], g: G.k })));
+  return GROUPS.map(G => ({ k: G.k, n: G.n, c: G.c, v: w => w.g[G.k] }));
+}
+function weeksIn(dir, a, b) { return DASH[dir].slice(a, b + 1); }
+function aggregate(ws, per) {
+  if (per === "w") return ws.map(w => ({ ws: [w], d: w.d, l: dAxis(w.d), tl: "Неделя с " + dLong(w.d) }));
+  const out = [], key = w => per === "m" ? w.d.getUTCFullYear() * 12 + w.d.getUTCMonth() : w.d.getUTCFullYear() * 4 + Math.floor(w.d.getUTCMonth() / 3);
+  ws.forEach(w => { const k = key(w); let p = out[out.length - 1]; if (!p || p.k !== k) { p = { k, ws: [], d: w.d }; out.push(p); } p.ws.push(w); });
+  out.forEach(p => { const m = p.d.getUTCMonth(), y = p.d.getUTCFullYear(); p.l = per === "m" ? MON[m].replace("мая", "май") + " " + String(y).slice(2) : "Q" + (Math.floor(m / 3) + 1) + " " + y; p.tl = per === "m" ? MONN[m] + " " + y : (Math.floor(m / 3) + 1) + " квартал " + y; });
+  return out;
+}
+const sumBy = (ws, f) => ws.reduce((a, w) => a + f(w), 0);
+
+function renderDash() {
+  const dir = DS.dir, ws = weeksIn(dir, DS.a, DS.b), its = items();
+  $$("#dtabs button").forEach((b, i) => b.classList.toggle("on", i === dir));
+  $("#dmeta").textContent = `${ws.length} нед. · ${dLong(ws[0].d)} — ${dLong(ws[ws.length - 1].d)} · Месяцы и кварталы по дате понедельника`;
+  const fact = sumBy(ws, w => w.fact), model = sumBy(ws, w => w.model), own = sumBy(ws, w => w.g.perf + w.g.promo + w.g.media);
+  $("#dk").innerHTML = `
+   <div class="kpi g"><div class="l">Фактический результат</div><div class="v">${nf(fact)}<small>${UNIT}</small></div><div class="s">${ws.length} ${ws.length % 10 === 1 && ws.length % 100 !== 11 ? "неделя" : ws.length % 10 >= 2 && ws.length % 10 <= 4 && (ws.length % 100 < 12 || ws.length % 100 > 14) ? "недели" : "недель"} в выбранном периоде</div></div>
+   <div class="kpi"><div class="l">Расчёт модели</div><div class="v">${nf(model)}<small>${UNIT}</small></div><div class="s">Сумма всех факторных вкладов</div></div>
+   <div class="kpi"><div class="l">Вклад своей рекламы</div><div class="v">${nf(own)}<small>${UNIT}</small></div><div class="s">Медиа, performance и промо</div></div>
+   <div class="kpi"><div class="l">Отклонение факта</div><div class="v">${sg(fact - model)}<small>${UNIT}</small></div><div class="s">${pctf((fact - model) / fact)} от фактического результата</div></div>`;
+  // фильтр факторов
+  const fs = $("#dfocus"); const cur = fs.value;
+  fs.innerHTML = `<option value="">Все факторы</option>` + its.map(it => `<option value="${esc(it.k)}">${esc(it.n)}</option>`).join("");
+  fs.value = its.some(i => i.k === cur) ? cur : "";
+  $("#dlegend").innerHTML = its.map(it => `<button class="chip ${DS.hl.size && !DS.hl.has(it.k) ? "off" : ""} ${DS.hl.has(it.k) ? "hl" : ""}" data-k="${esc(it.k)}"><i style="background:${it.c}"></i>${esc(it.n)}</button>`).join("");
+  $$("#dlegend .chip").forEach(b => b.onclick = () => { toggleHl(b.dataset.k); });
+  $$("#dper button").forEach(b => b.classList.toggle("on", b.dataset.p === DS.per));
+  $("#dgroups").classList.toggle("hidden", !DS.showGroups);
+  $("#dgroups").innerHTML = GROUPS.map(G => `<div><b style="display:flex;gap:6px;align-items:center"><i style="width:7px;height:7px;border-radius:1.5px;background:${G.c};display:inline-block"></i>${G.n}</b><span>${G.f.join(", ")}</span></div>`).join("");
+  areaChart(ws, its);
+  // вклад за период
+  const tot = its.map(it => ({ k: it.k, n: it.n, c: it.c, v: sumBy(ws, it.v), share: sumBy(ws, it.v) / model }));
+  hbars($("#dbars"), tot, { dim: r => DS.hl.size && !DS.hl.has(r.k), onClick: r => toggleHl(r.k) });
+  // почему изменился
+  const pws = weeksIn(dir, DS.a - 52, DS.b - 52);
+  const dlt = its.map(it => ({ k: it.k, n: it.n, c: it.c, v: sumBy(ws, it.v) - sumBy(pws, it.v) }));
+  $("#dcmp").textContent = `По сравнению с ${dShortNoY(pws[0].d)} — ${dLong(pws[pws.length - 1].d)}`;
+  hbars($("#ddelta"), dlt, { signed: true, label: "Изменение", dim: r => DS.hl.size && !DS.hl.has(r.k), onClick: r => toggleHl(r.k) });
+  const dm = model - sumBy(pws, w => w.model);
+  $("#ddeltasum").innerHTML = `Изменение расчётного результата: <b>${sg(dm)}</b>`;
+  renderResp(ws);
+  renderTable(ws, its);
+}
+function toggleHl(k) { if (DS.hl.has(k)) DS.hl.delete(k); else DS.hl.add(k); $("#dfocus").value = DS.hl.size === 1 ? [...DS.hl][0] : ""; renderDash(); }
+
+function areaChart(ws, its) {
+  const el = $("#darea"); let pts = aggregate(ws, DS.per);
+  if (DS.zoom) pts = pts.slice(DS.zoom[0], DS.zoom[1] + 1);
+  const W = Math.max(360, el.clientWidth), H = 260, L = 46, R = 8, T = 10, B = 28;
+  const n = pts.length;
+  const vals = pts.map(p => its.map(it => sumBy(p.ws, it.v)));
+  const facts = pts.map(p => sumBy(p.ws, w => w.fact)), models = pts.map(p => sumBy(p.ws, w => w.model));
+  // положительные и отрицательные части стекаются раздельно, без скачков полосы при смене знака
+  const stk = vals.map(row => { let up = 0, dn = 0; return row.map(v => { const p = Math.max(0, v), q = Math.min(0, v); const r = { p: [up, up + p], n: [dn + q, dn] }; up += p; dn += q; return r; }); });
+  const flat = stk.flatMap(r => r.flatMap(c => [c.p[1], c.n[0]]));
+  const ymax = Math.max(...flat, ...facts, ...models), ymin = Math.min(0, ...flat);
+  const yt = niceTicks(ymin, ymax * 1.05, 4), y0 = yt[0], y1 = yt[yt.length - 1];
+  const sx = i => L + (n === 1 ? (W - L - R) / 2 : (W - L - R) * i / (n - 1)), sy = v => T + (H - T - B) * (1 - (v - y0) / (y1 - y0));
+  let s = "";
+  yt.forEach(v => s += `<line x1="${L}" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="${v === 0 ? "#d2d2d6" : "#efefed"}"/><text x="${L - 8}" y="${sy(v) + 3}" font-size="8" fill="#8b8b94" text-anchor="end">${nf(v)}</text>`);
+  its.forEach((it, j) => {
+    const op = DS.hl.size && !DS.hl.has(it.k) ? .14 : .92;
+    for (const side of ["p", "n"]) {
+      if (!stk.some(r => Math.abs(r[j][side][1] - r[j][side][0]) > 1e-6)) continue;
+      const top = stk.map((r, i) => [sx(i), sy(r[j][side][1])]), bot = stk.map((r, i) => [sx(i), sy(r[j][side][0])]).reverse();
+      s += `<path d="${pathOf(top)} L${pathOf(bot).slice(1)} Z" fill="${it.c}" opacity="${op}" stroke="${it.c}" stroke-width=".4"/>`;
+    }
+  });
+  s += `<path d="${pathOf(models.map((v, i) => [sx(i), sy(v)]))}" fill="none" stroke="#3244c9" stroke-width="1.1" stroke-dasharray="3 2" opacity=".95"/>`;
+  s += `<path d="${pathOf(facts.map((v, i) => [sx(i), sy(v)]))}" fill="none" stroke="#2b2b33" stroke-width="1.2"/>`;
+  const step = Math.max(1, Math.ceil(n * 52 / (W - L - R)));
+  pts.forEach((p, i) => { if (i % step === 0 || i === n - 1 && (n - 1) % step > step * .6) s += `<text x="${sx(i)}" y="${H - 12}" font-size="7.5" fill="#8b8b94" text-anchor="middle">${p.l}</text>`; });
+  s += `<line id="dcur" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="#8b8b94" stroke-dasharray="2 2" opacity="0"/><rect id="dbrush" x="0" y="${T}" width="0" height="${H - T - B}" fill="#3244c9" opacity=".08"/>`;
+  s += `<rect id="dhit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent" style="cursor:crosshair"/>`;
+  el.innerHTML = svgEl(W, H, s);
+  const hit = $("#dhit", el), cur = $("#dcur", el), br = $("#dbrush", el); let drag = null;
+  const idxAt = e => { const r = el.querySelector("svg").getBoundingClientRect(); const x = (e.clientX - r.left) * W / r.width; return Math.max(0, Math.min(n - 1, Math.round((x - L) / ((W - L - R) / Math.max(1, n - 1))))); };
+  hit.addEventListener("mousemove", e => {
+    const i = idxAt(e); cur.setAttribute("x1", sx(i)); cur.setAttribute("x2", sx(i)); cur.setAttribute("opacity", 1);
+    if (drag != null) { const a = Math.min(drag, i), b = Math.max(drag, i); br.setAttribute("x", sx(a)); br.setAttribute("width", sx(b) - sx(a)); }
+    const rows = its.map((it, j) => ({ it, v: vals[i][j] })).filter(r => Math.abs(r.v) >= .5 && (!DS.hl.size || DS.hl.has(r.it.k)));
+    tip.show(`<div class="t">${pts[i].tl}</div><div class="r"><span>Факт</span><b>${nf(facts[i])}</b></div><div class="r"><span>Расчёт</span><b>${nf(models[i])}</b></div><div style="border-top:1px solid #eee;margin:5px 0"></div>` + rows.slice().reverse().map(r => `<div class="r"><span><i style="background:${r.it.c}"></i>${esc(r.it.n)}</span><b>${nf(r.v)}</b></div>`).join(""), e.clientX, e.clientY);
+  });
+  hit.addEventListener("mouseleave", () => { cur.setAttribute("opacity", 0); tip.hide(); });
+  hit.addEventListener("mousedown", e => { drag = idxAt(e); e.preventDefault(); });
+  window.addEventListener("mouseup", function up(e) {
+    window.removeEventListener("mouseup", up); if (drag == null) return;
+    const i = idxAt(e), a = Math.min(drag, i), b = Math.max(drag, i); drag = null; br.setAttribute("width", 0);
+    if (b - a >= 2) { const base = DS.zoom ? DS.zoom[0] : 0; DS.zoom = [base + a, base + b]; renderDash(); }
+  });
+  $("#dzoomreset").classList.toggle("hidden", !DS.zoom && !DS.hl.size);
+}
+
+function renderResp(ws) {
+  const sel = $("#dch"); if (!sel.options.length) { sel.innerHTML = DCH.map(c => `<option>${esc(c.n)}</option>`).join(""); }
+  sel.value = DS.ch;
+  const dir = DS.dir, c = DCH.find(x => x.n === DS.ch);
+  const vol = sumBy(ws, w => c.vol * flightAt(w.i % 52) * c.flight[dir]);
+  const M = sumBy(ws, w => w.g.media);
+  const act = DCH.filter(x => sumBy(ws, w => x.vol * flightAt(w.i % 52) * x.flight[dir]) > 0);
+  const effSum = act.reduce((a, x) => a + x.eff[dir], 0) || 1;
+  let S, V;
+  if (vol > 0) { S = vol / c.sat; V = (M * c.eff[dir] / effSum) / (1 - Math.exp(-c.sat)); }
+  else { const vn = (c.vol || 9e5) * 26; S = vn; V = (M * c.eff[dir] / (effSum + c.eff[dir])) / (1 - Math.exp(-1)); }
+  const unit = c.n.startsWith("Блогеры") ? "просмотров" : "OTS 25–54, контакты";
+  const lam = c.lam, nweeks = Math.ceil(Math.log(.05) / Math.log(lam));
+  $("#dchtags").innerHTML = `<span class="tag">Объём: ${nf(vol)} ${unit}</span><span class="tag">Эффект на ${nweeks} нед.</span>`;
+  const xmax = Math.max(vol * 2.2, S * 2.6);
+  const pts = []; for (let k = 0; k <= 60; k++) { const x = xmax * k / 60; pts.push([x, V * (1 - Math.exp(-x / S))]); }
+  const xt = niceTicks(0, xmax, 7).filter(v => v <= xmax).map(v => ({ x: v, l: nf(v) }));
+  const yv = V * (1 - Math.exp(-vol / S));
+  const g = lineChart($("#dresp"), { h: 170, series: [{ pts, color: "#4d5bd4", width: 1.3 }], points: [{ x: vol, y: yv, r: 3.5 }], xticks: xt, xTitle: unit, yTitle: UNIT, vline: vol, xmin: 0, xmax });
+  const hitR = $("#dresp .hit"); hitR.addEventListener("mousemove", e => { const r = $("#dresp svg").getBoundingClientRect(); const x = Math.max(0, g.inv((e.clientX - r.left) * g.W / r.width)); tip.show(`<div class="t">${nf(x)} ${unit}</div><div class="r"><span>Вклад за период</span><b>${nf(V * (1 - Math.exp(-x / S)))} ${UNIT}</b></div>`, e.clientX, e.clientY); }); hitR.addEventListener("mouseleave", tip.hide);
+  const STEP = c.n.startsWith("Блогеры") ? 10000 : 100000;
+  const m = V / S * Math.exp(-vol / S) * STEP;
+  const cpts = ws.map((w, k) => [k, m * (1 - lam) * lam ** k]);
+  const step = Math.max(1, Math.ceil(ws.length / 16));
+  const xt2 = ws.map((w, k) => ({ x: k, l: dShortNoY(w.d) })).filter((t, k) => k % step === 0);
+  $("#dcarrysub").textContent = `Дополнительные ${nf(STEP)} ${unit} в первую неделю периода`;
+  const g2 = lineChart($("#dcarry"), { h: 170, series: [{ pts: cpts, color: "#4d5bd4", width: 1.3 }], xticks: xt2, xmin: 0, xmax: ws.length - 1, left: 34 });
+  const hitC = $("#dcarry .hit"); hitC.addEventListener("mousemove", e => { const r = $("#dcarry svg").getBoundingClientRect(); const k = Math.max(0, Math.min(ws.length - 1, Math.round(g2.inv((e.clientX - r.left) * g2.W / r.width)))); tip.show(`<div class="t">Неделя с ${dLong(ws[k].d)}</div><div class="r"><span>Эффект</span><b>${cpts[k][1].toFixed(1).replace(".", ",")} ${UNIT}</b></div>`, e.clientX, e.clientY); }); hitC.addEventListener("mouseleave", tip.hide);
+}
+
+function tableRows(ws, its) {
+  const pts = aggregate(ws, DS.per);
+  return [["Период", "Факт", "Расчёт", ...its.map(i => i.n)], ...pts.map(p => [p.tl, sumBy(p.ws, w => w.fact), sumBy(p.ws, w => w.model), ...its.map(it => sumBy(p.ws, it.v))])];
+}
+function renderTable(ws, its) {
+  const rows = tableRows(ws, its);
+  $("#dtblcount").textContent = `${rows.length - 1} строк · CSV доступен сверху`;
+  $("#dtbl").innerHTML = `<table><thead><tr>${rows[0].map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.slice(1).map(r => `<tr>${r.map((v, i) => `<td>${i ? nf(v) : esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
+function initDash() {
+  $$("#dtabs button").forEach((b, i) => b.onclick = () => { DS.dir = i; DS.zoom = null; renderDash(); });
+  $$("#dper button").forEach(b => b.onclick = () => { DS.per = b.dataset.p; DS.zoom = null; renderDash(); });
+  $("#dgrp").onchange = e => { DS.grp = e.target.value; DS.hl.clear(); renderDash(); };
+  $("#dfocus").onchange = e => { DS.hl.clear(); if (e.target.value) DS.hl.add(e.target.value); renderDash(); };
+  $("#dshowgroups").onclick = () => { DS.showGroups = !DS.showGroups; renderDash(); };
+  $("#dzoomreset").onclick = () => { DS.zoom = null; DS.hl.clear(); renderDash(); };
+  $("#dch").onchange = e => { DS.ch = e.target.value; renderDash(); };
+  const fa = $("#dfrom"), fb = $("#dto");
+  fa.min = fb.min = dISO(wDate(NW)); fa.max = fb.max = dISO(wDate(103)); fa.value = dISO(wDate(DS.a)); fb.value = dISO(wDate(DS.b));
+  const snap = v => { const t = parseISO(v); return Math.max(NW, Math.min(103, NW + Math.round((t - W0) / (7 * DAY)))); };
+  fa.onchange = () => { if (!fa.value) return; DS.a = Math.min(snap(fa.value), DS.b - 1); fa.value = dISO(wDate(DS.a)); DS.zoom = null; renderDash(); };
+  fb.onchange = () => { if (!fb.value) return; DS.b = Math.max(snap(fb.value), DS.a + 1); fb.value = dISO(wDate(DS.b)); DS.zoom = null; renderDash(); };
+  $("#dreset").onclick = () => { DS.a = NW; DS.b = 103; fa.value = dISO(wDate(DS.a)); fb.value = dISO(wDate(DS.b)); DS.zoom = null; DS.hl.clear(); renderDash(); };
+  $("#dcsv").onclick = () => saveFile(`результаты_${DIRS[DS.dir].n.replace(" ", "_")}.csv`, "\ufeff" + csvOf(tableRows(weeksIn(DS.dir, DS.a, DS.b), items())));
+}
+
+// ===== Планировщик: медиаплан и прогноз =====
+const UNITS = { ots: "OTS 25–54, контакты", ots18: "OTS 18+, контакты", views: "Просмотры", rub: "Рубли", sess: "Сессии", inst: "Установки" };
+// name, tag, unit, X0 (13 нед.), Xnom (если не в плане), lam, u (насыщение в точке плана), веса эффекта по направлениям
+const CH = [
+  ["Аудиореклама", "Медиа", "ots", 0, 1.2e7, .45, .5, [.015, .012, .008]],
+  ["Баннерная реклама", "Медиа", "ots", 4873412, 0, .3, .9, [.025, .02, .02]],
+  ["Блогеры 2023–2025, CPS", "Медиа", "views", 0, 1.5e5, .5, .6, [.02, .015, .01]],
+  ["Блогеры — просмотры", "Медиа", "views", 206318, 0, .5, .7, [.02, .012, .01]],
+  ["Наружная реклама", "Медиа", "ots18", 19246905, 0, .65, 1.1, [.04, .05, .03]],
+  ["Онлайн-видео", "Медиа", "ots", 13482617, 0, .55, .45, [.07, .08, .05]],
+  ["Промостраницы", "Медиа", "ots", 0, 4e6, .2, 1, [.01, .01, .01]],
+  ["Реклама на маркетплейсах", "Медиа", "ots", 3594208, 0, .25, 1.2, [.03, .025, .015]],
+  ["ТВ", "Медиа", "ots", 0, 1.1e8, .7, .5, [.08, .1, .05]],
+  ["Indoor", "Медиа", "ots", 2913774, 0, .5, .8, [.012, .015, .01]],
+  ["Smart TV", "Медиа", "ots", 12087391, 0, .6, .55, [.05, .07, .04]],
+  ["Метапоиск", "Performance", "rub", 61284350, 0, .15, 1.5, [.2, .17, .27]],
+  ["Партнёрский канал Affiliate", "Performance", "rub", 53517840, 0, .1, 1.1, [.13, .12, .15]],
+  ["Яндекс, брендовый поиск", "Performance", "sess", 517263, 0, .05, 2.2, [.1, .12, .07]],
+  ["Яндекс, небрендовый поиск", "Performance", "sess", 386940, 0, .05, .9, [.06, .07, .04]],
+  ["CPA-сети", "Performance", "rub", 23106420, 0, .1, 1, [.05, .04, .06]],
+  ["CPI: привлечение пользователей", "Performance", "inst", 138452, 0, .2, .7, [.04, .03, .02]],
+  ["CPI: ретаргетинг", "Performance", "rub", 11042900, 0, .1, 1.3, [.03, .03, .02]],
+  ["Google, брендовый поиск", "Performance", "sess", 158734, 0, .05, 2, [.025, .03, .04]],
+  ["Google, небрендовый поиск", "Performance", "sess", 91206, 0, .05, .8, [.013, .015, .02]],
+  ["Промо", "Промо", "rub", 32260000, 0, .2, .8, [.1, .09, .12]]
+].map((r, i) => ({ n: r[0], tag: r[1], unit: r[2], X0: r[3], Xnom: r[4] || r[3], lam: r[5], u: r[6], w: r[7], c: ["#9a7b45", "#698946", "#b9c98f", "#162062", "#9eca71", "#575760", "#c9b27a", "#4d706e", "#2a2a33", "#8696e5", "#3244c9", "#5f7f3a", "#a9b6f0", "#1f2b6b", "#a6d27c", "#46464f", "#c2c9f2", "#36585a", "#8c6a3c", "#6574d8", "#4757d6"][i] }));
+const CHM = Object.fromEntries(CH.map(c => [c.n, c]));
+
+function profileOf(c, n, flat, phase = 0) {
+  if (flat) return Array(n).fill(1 / n);
+  const p = [];
+  for (let k = 0; k < n; k++) {
+    const f = k / Math.max(1, n - 1); let v = 1;
+    switch (c.n) {
+      case "Промо": v = f < .5 ? 1.7 : .55; break;
+      case "Smart TV": v = f < .4 || f > .7 ? 1.2 : .25; break;
+      case "Онлайн-видео": v = f > .55 && f < .7 ? .4 : 1.1; break;
+      case "Наружная реклама": v = f < .6 ? 1.3 : .35; break;
+      case "Indoor": v = f > .2 && f < .8 ? 1.3 : .3; break;
+      case "Блогеры — просмотры": case "Блогеры 2023–2025, CPS": v = f > .15 && f < .6 ? 1.6 : .3; break;
+      case "ТВ": v = f < .45 ? 1.4 : .4; break;
+      default: v = 1 + .14 * Math.sin(2 * Math.PI * (f + phase + c.n.length / 17)) - (f > .72 && f < .84 ? .25 : 0);
+    }
+    p.push(Math.max(.02, v));
+  }
+  const s = p.reduce((a, b) => a + b, 0); return p.map(v => v / s);
+}
+// базовый уровень и внешние условия по неделе (без своей рекламы)
+function baseWeek(d, t, ext) {
+  const dir = DIRS[d], i = Math.round((t - W0) / (7 * DAY)), ts = ((i % 52) + 52) % 52, tc = Math.min(51, Math.max(0, i));
+  const dem = dir.dem * (1 + dir.demAmp * cosS(ts, 46)), prod = dir.prod[0] + dir.prod[1] * tc, comp = dir.comp[0] + dir.comp[1] * tc;
+  return dir.B + dem * (1 + ext.dem / 100) + prod * (1 + ext.prod / 100) + comp * (1 + ext.comp / 100);
+}
+function ownWeek(d, t) {
+  const dir = DIRS[d], i = Math.round((t - W0) / (7 * DAY)), ts = ((i % 52) + 52) % 52;
+  return dir.perf * (1 + .1 * cosS(ts, 46)) + dir.promo * promoBurst(ts) + dir.media * (.18 + mediaShape[52 + ts] * .62);
+}
+const P0 = { start: Date.UTC(2026, 9, 19), end: Date.UTC(2027, 0, 11) };
+const nWeeks = (a, b) => Math.max(1, Math.round((b - a) / (7 * DAY)) + 1);
+// калибровка кривых на исходном плане
+const OWNAVG = [0, 1, 2].map(d => { let a = 0; for (let k = 0; k < 52; k++) a += ownWeek(d, W0 + k * 7 * DAY); return a / 52; });
+const SF = (d, t) => .55 + .45 * ownWeek(d, t) / OWNAVG[d];   // сезонная отдача рекламы
+(function calibrate() {
+  const n = nWeeks(P0.start, P0.end), wk = Array.from({ length: n }, (_, k) => P0.start + k * 7 * DAY);
+  const E = [0, 1, 2].map(d => wk.reduce((a, t) => a + ownWeek(d, t), 0));
+  const inW = [0, 1, 2].map(d => CH.filter(c => c.X0 > 0).reduce((a, c) => a + c.w[d], 0));
+  CH.forEach(c => {
+    const X = c.X0 || c.Xnom, prof = profileOf(c, n, false);
+    c.S = X / n / (1 - c.lam) / c.u;
+    c.V = [0, 1, 2].map(d => { let A = 0, sat = 0; for (let k = 0; k < n; k++) { A = X * prof[k] + c.lam * A; sat += (1 - Math.exp(-A / c.S)) * SF(d, wk[k]); } return E[d] * c.w[d] / inW[d] / sat; });
+  });
+})();
+function chEff(c, X, res, d, prof, n, t0) {
+  const out = new Array(n + 26); let A = 0; const m = (1 + res / 100) * c.V[d];
+  for (let k = 0; k < n + 26; k++) { A = (k < n ? X * prof[k] : 0) + c.lam * A; out[k] = m * (1 - Math.exp(-A / c.S)) * SF(d, t0 + k * 7 * DAY); }
+  return out;
+}
+const PS = {
+  dir: 2, start: P0.start, end: P0.end, mode: "future", hFrom: Date.UTC(2025, 8, 1), hTo: Date.UTC(2026, 7, 24),
+  inPlan: new Set(CH.filter(c => c.X0 > 0).map(c => c.n)), vol: Object.fromEntries(CH.map(c => [c.n, c.X0])), res: Object.fromEntries(CH.map(c => [c.n, 0])),
+  price: {}, flat: {}, money: {}, open: new Set(), sel: "Баннерная реклама", ext: { dem: 0, prod: 0, comp: 0 }
+};
+const INIT = JSON.parse(JSON.stringify({ ...PS, inPlan: [...PS.inPlan], open: [] }));
+function weeksOfPlan() {
+  if (PS.mode === "hist") { const end = PS.hTo, start = end - 12 * 7 * DAY; return Array.from({ length: 13 }, (_, k) => start + k * 7 * DAY); }
+  const n = Math.min(26, Math.max(4, nWeeks(PS.start, PS.end))); return Array.from({ length: n }, (_, k) => PS.start + k * 7 * DAY);
+}
+function histIdx(t) { return NW + Math.round((t - W0) / (7 * DAY)); }
+function forecast(st, d, wk) {
+  const n = wk.length, phase = ((st.hFrom / DAY) % 97) / 97 * .3;
+  const base = wk.map(t => st.mode === "hist" ? (() => { const w = DASH[d][histIdx(t)]; return w ? w.g.base + w.g.dem * (1 + st.ext.dem / 100) + w.g.prod * (1 + st.ext.prod / 100) + w.g.comp * (1 + st.ext.comp / 100) : baseWeek(d, t, st.ext); })() : baseWeek(d, t, st.ext));
+  const ch = {};
+  CH.forEach(c => { if (!st.inPlan.has(c.n) || !(st.vol[c.n] > 0)) return; ch[c.n] = chEff(c, st.vol[c.n], st.res[c.n] || 0, d, profileOf(c, n, st.flat[c.n], phase), n, wk[0]); });
+  const tot = base.map((b, k) => b + Object.values(ch).reduce((a, e) => a + e[k], 0));
+  return { base, ch, tot, n };
+}
+function forecastAll(st, wk) { const ds = PS.dir === 3 ? [0, 1, 2] : [PS.dir]; const fs = ds.map(d => forecast(st, d, wk)); const n = wk.length;
+  const ch = {}; fs.forEach(f => Object.entries(f.ch).forEach(([k, e]) => { ch[k] = ch[k] ? ch[k].map((v, i) => v + e[i]) : e.slice(); }));
+  return { n, base: Array.from({ length: n }, (_, k) => fs.reduce((a, f) => a + f.base[k], 0)), tot: Array.from({ length: n }, (_, k) => fs.reduce((a, f) => a + f.tot[k], 0)), ch }; }
+const sumA = a => a.reduce((x, y) => x + y, 0);
+function stOf(o) { return { ...o, inPlan: new Set(o.inPlan) }; }
+
+function renderPlan() {
+  $$("#ptabs button").forEach((b, i) => b.classList.toggle("on", i === PS.dir));
+  $$("#pmode button").forEach(b => b.classList.toggle("on", b.dataset.m === PS.mode));
+  const wk = weeksOfPlan(), n = wk.length;
+  $("#pinfo").textContent = `${n} нед. · Недели начинаются в понедельник, последний период включает семь дней`;
+  // каналы в плане
+  $("#pchips").innerHTML = CH.map(c => `<button class="cchip ${PS.inPlan.has(c.n) ? "" : "no"}" data-n="${esc(c.n)}">${PS.inPlan.has(c.n) ? "✓" : "+"} ${esc(c.n)}</button>`).join("");
+  $$("#pchips .cchip").forEach(b => b.onclick = () => { const k = b.dataset.n; if (PS.inPlan.has(k)) PS.inPlan.delete(k); else { PS.inPlan.add(k); if (!(PS.vol[k] > 0)) PS.vol[k] = CHM[k].Xnom; } renderPlan(); });
+  const sel = CH.filter(c => PS.inPlan.has(c.n)), rubN = sel.filter(c => c.unit === "rub" || PS.price[c.n] > 0).length;
+  $("#pchipnote").textContent = `Цены можно задать в «Настройках канала». Ввод бюджета доступен для ${rubN} из ${sel.length} выбранных каналов, остальные работают с объёмами`;
+  renderCards(sel, wk);
+  // расчёты
+  const cur = forecastAll(PS, wk);
+  const s0 = stOf(INIT), sV = { ...stOf(INIT), inPlan: PS.inPlan, vol: PS.vol, flat: PS.flat, mode: PS.mode, hFrom: PS.hFrom, hTo: PS.hTo, start: PS.start, end: PS.end };
+  const sE = { ...sV, ext: PS.ext };
+  const F0 = sumA(forecastAll({ ...s0, mode: PS.mode, hFrom: PS.hFrom, hTo: PS.hTo, start: PS.start, end: PS.end }, wk).tot), F1 = sumA(forecastAll(sV, wk).tot), F2 = sumA(forecastAll(sE, wk).tot), F3 = sumA(cur.tot);
+  const init = forecastAll({ ...s0, mode: PS.mode, hFrom: PS.hFrom, hTo: PS.hTo }, wk);
+  const chTot = Object.fromEntries(Object.entries(cur.ch).map(([k, e]) => [k, sumA(e.slice(0, n))]));
+  const eff = sumA(Object.values(chTot));
+  let known = 0, unknown = 0; sel.forEach(c => { const X = PS.vol[c.n] || 0; if (c.unit === "rub") known += X; else if (PS.price[c.n] > 0) known += X * PS.price[c.n] / (c.unit.startsWith("ots") ? 1000 : 1); else unknown++; });
+  const dn = PS.dir === 3 ? "по трём направлениям" : "";
+  $("#pk").innerHTML = `
+   <div class="kpi g"><div class="l">Прогноз бронирований <span class="q" data-tip="Сумма прогноза за период: база, внешние условия и эффект каналов с учётом заданной результативности">?</span></div><div class="v">${nf(F3)}<small>${UNIT}</small></div><div class="s">С учётом экспертной результативности ${dn}</div></div>
+   <div class="kpi"><div class="l">Разница с исходным планом <span class="q" data-tip="Изменение прогноза относительно расчёта на исходном медиаплане без поправок">?</span></div><div class="v">${sg(F3 - F0)}<small>${UNIT}</small></div><div class="s">Изменение относительно исходного расчёта</div></div>
+   <div class="kpi"><div class="l">Эффект каналов <span class="q" data-tip="Вклад рекламы и промо внутри периода, без эффекта, перенесённого за его границу">?</span></div><div class="v">${sg(eff)}<small>${UNIT}</small></div><div class="s">Суммарный эффект рекламы и промо</div></div>
+   <div class="kpi"><div class="l">Известная часть бюджета <span class="q" data-tip="Бюджет каналов, для которых задана цена или объём в рублях">?</span></div><div class="v">${nf(known)}<small>₽</small></div><div class="s">${unknown} ${unknown % 10 === 1 && unknown % 100 !== 11 ? "канал" : unknown % 10 >= 2 && unknown % 10 <= 4 && (unknown % 100 < 12 || unknown % 100 > 14) ? "канала" : "каналов"} без подтверждённой цены</div></div>`;
+  // прогноз по неделям
+  const fact = PS.mode === "hist" ? wk.map(t => { const ds = PS.dir === 3 ? [0, 1, 2] : [PS.dir]; return ds.reduce((a, d) => a + (DASH[d][histIdx(t)] ? DASH[d][histIdx(t)].fact : 0), 0); }) : null;
+  const xt = wk.map((t, k) => ({ x: k, l: dDot(new Date(t)) })).filter((_, k) => k % Math.max(1, Math.ceil(n / 13)) === 0);
+  const ser = [{ pts: init.tot.map((v, k) => [k, v]), color: "#9aa3e8", width: 1.4, dash: "4 3" }, { pts: cur.tot.map((v, k) => [k, v]), color: "#3244c9", width: 1.6 }];
+  if (fact) ser.push({ pts: fact.map((v, k) => [k, v]), color: "#2b2b33", width: 1.2 });
+  const g = lineChart($("#pline"), { h: 200, series: ser, xticks: xt, xmin: 0, xmax: n - 1, ymin: 0 });
+  hoverIdx($("#pline"), g, n, k => `<div class="t">Неделя с ${dLong(new Date(wk[k]))}</div><div class="r"><span>Исходный план</span><b>${nf(init.tot[k])}</b></div><div class="r"><span>Сценарий</span><b>${nf(cur.tot[k])}</b></div>${fact ? `<div class="r"><span>Факт</span><b>${nf(fact[k])}</b></div>` : ""}<div class="r"><span>База и условия</span><b>${nf(cur.base[k])}</b></div>`);
+  $("#plinechips").innerHTML = `<span class="tag">Исходный: ${nf(F0)}</span><span class="tag">Объёмы и условия: ${nf(F3)}</span><span class="tag">Изменение объёмов: ${sg(F1 - F0)}</span><span class="tag">Внешние условия: ${sg(F2 - F1)}</span><span class="tag">Ожидаемая результативность: ${sg(F3 - F2)}</span>${fact ? `<span class="tag">Факт: ${nf(sumA(fact))}</span>` : ""}`;
+  $("#plinesub").textContent = fact ? "Прогноз на исторических неделях рядом с фактом: так видно, насколько модель попадает в реальный результат" : "Исходный план и сценарий с изменением объёмов, внешних условий и результативности";
+  // донат
+  renderDonut(chTot, sumA(cur.base));
+  // площадь по неделям
+  renderChArea(cur, wk);
+  // таблица
+  const rows = [["Неделя", "Исходный", "Сценарий", "Разница", "База и условия", "Эффект каналов", ...(fact ? ["Факт"] : [])], ...wk.map((t, k) => [dDot(new Date(t)), init.tot[k], cur.tot[k], cur.tot[k] - init.tot[k], cur.base[k], cur.tot[k] - cur.base[k], ...(fact ? [fact[k]] : [])])];
+  PS._rows = rows;
+  $("#pweektbl").innerHTML = `<table><thead><tr>${rows[0].map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.slice(1).map(r => `<tr>${r.map((v, i) => `<td>${i ? (i === 3 ? sg(v) : nf(v)) : v}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  renderStep(wk);
+  $$("#pext input").forEach(i => { i.value = PS.ext[i.dataset.k]; $("#pext [data-v=" + i.dataset.k + "]").textContent = (PS.ext[i.dataset.k] > 0 ? "+" : "") + PS.ext[i.dataset.k] + "%"; });
+  renderSaved();
+}
+function hoverIdx(el, g, n, html) {
+  const hit = $(".hit", el); hit.addEventListener("mousemove", e => { const r = $("svg", el).getBoundingClientRect(); const k = Math.max(0, Math.min(n - 1, Math.round(g.inv((e.clientX - r.left) * g.W / r.width)))); tip.show(html(k), e.clientX, e.clientY); }); hit.addEventListener("mouseleave", tip.hide);
+}
+const fmtIn = (c, X) => nf(X);
+function renderCards(sel, wk) {
+  const box = $("#pcards"), keepScroll = box.scrollTop;
+  box.innerHTML = sel.map(c => {
+    const X = PS.vol[c.n] || 0, rub = c.unit === "rub", pr = PS.price[c.n], money = PS.money[c.n] && pr > 0;
+    const per = c.unit.startsWith("ots") ? 1000 : 1, cost = rub ? X : pr > 0 ? X * pr / per : 0;
+    const max = Math.max(c.X0 * 3, c.Xnom * 2, X * 1.2);
+    const right = rub ? nf(X) + " ₽" : pr > 0 ? "Известно: " + nf(cost) + " ₽" : "Известно: 0 ₽ · не все цены";
+    const inVal = money ? nf(cost) : nf(X);
+    return `<div class="ch ${PS.sel === c.n ? "on" : ""}" data-n="${esc(c.n)}">
+     <div class="ch-top"><button class="ch-name">${esc(c.n)}</button><span class="ch-tag">${c.tag}</span></div>
+     <div class="ch-in"><input type="text" inputmode="numeric" value="${inVal}" aria-label="${money || rub ? "Бюджет" : "Объём"}: ${esc(c.n)}"><button class="ch-mode" ${rub || pr > 0 ? "" : "disabled"}>${rub ? "Бюджет" : money ? "Бюджет" : "Объём"}</button><span class="q" data-tip="${rub ? "Канал планируется в рублях" : "Объём в единицах канала. После ввода цены в настройках можно переключиться на бюджет"}">?</span></div>
+     <input type="range" min="0" max="${Math.round(max)}" step="${Math.max(1, Math.round(max / 300))}" value="${Math.round(X)}" aria-label="Объём: ${esc(c.n)}">
+     <div class="ch-cap"><span>${nf(X)} ${UNITS[c.unit]}</span><span>${right}</span></div>
+     <div class="ch-res"><div class="lab">Результативность к истории <span class="q" data-tip="Экспертная поправка к отдаче канала относительно исторической модели">?</span></div>
+      <div class="rr"><input type="range" min="-50" max="50" step="1" value="${PS.res[c.n] || 0}" aria-label="Результативность: ${esc(c.n)}"><input type="number" min="-50" max="50" value="${PS.res[c.n] || 0}"><span>%</span></div></div>
+     <button class="ch-set">Настройки канала <span>${PS.open.has(c.n) ? "−" : "+"}</span></button>
+     ${PS.open.has(c.n) ? `<div class="ch-setbody">${rub ? "" : `<label>${c.unit.startsWith("ots") ? "Цена за 1 000 контактов, ₽" : "Цена за единицу, ₽"}<input class="pr" type="number" min="0" value="${pr || ""}" placeholder="не задана"></label>`}
+       <label>Распределение по неделям<select class="fl" style="width:100%;margin-top:3px;border:1px solid #d9d9dd;border-radius:5px;padding:5px"><option value="h" ${PS.flat[c.n] ? "" : "selected"}>По историческому профилю</option><option value="f" ${PS.flat[c.n] ? "selected" : ""}>Равномерно</option></select></label>
+       <div>Перенос эффекта: ${Math.ceil(Math.log(.05) / Math.log(c.lam))} нед.</div></div>` : ""}
+    </div>`;
+  }).join("");
+  box.scrollTop = keepScroll;
+  $$(".ch", box).forEach(card => {
+    const n = card.dataset.n, c = CHM[n], rub = c.unit === "rub", per = c.unit.startsWith("ots") ? 1000 : 1;
+    $(".ch-name", card).onclick = () => { PS.sel = n; renderPlan(); };
+    const [rng, rr] = $$("input[type=range]", card), txt = $("input[type=text]", card), num = $("input[type=number]:not(.pr)", card);
+    rng.oninput = () => { PS.vol[n] = +rng.value; PS.sel = n; refreshSoon(); };
+    txt.onchange = () => { const v = +txt.value.replace(/[^\d]/g, "") || 0; PS.vol[n] = PS.money[n] && PS.price[n] > 0 ? v / PS.price[n] * per : v; PS.sel = n; renderPlan(); };
+    rr.oninput = () => { PS.res[n] = +rr.value; refreshSoon(); };
+    num.onchange = () => { PS.res[n] = Math.max(-50, Math.min(50, +num.value || 0)); renderPlan(); };
+    $(".ch-mode", card).onclick = () => { if (!rub && PS.price[n] > 0) { PS.money[n] = !PS.money[n]; renderPlan(); } };
+    $(".ch-set", card).onclick = () => { if (PS.open.has(n)) PS.open.delete(n); else PS.open.add(n); renderPlan(); };
+    const pr = $(".pr", card); if (pr) pr.onchange = () => { PS.price[n] = +pr.value || 0; if (!PS.price[n]) PS.money[n] = false; renderPlan(); };
+    const fl = $(".fl", card); if (fl) fl.onchange = () => { PS.flat[n] = fl.value === "f"; renderPlan(); };
+  });
+}
+let _raf = 0; function refreshSoon() { cancelAnimationFrame(_raf); _raf = requestAnimationFrame(renderPlan); }
+
+function renderDonut(chTot, baseSum) {
+  const el = $("#pdonut"), items = CH.filter(c => chTot[c.n] > .5).map(c => ({ c, v: chTot[c.n] })), tot = sumA(items.map(i => i.v));
+  const W = 260, H = 200, cx = W / 2, cy = H / 2, R1 = 86, R0 = 58; let a = -Math.PI / 2, s = "";
+  items.forEach(it => { const da = it.v / tot * 2 * Math.PI, a2 = a + da, la = da > Math.PI ? 1 : 0;
+    const p = (r, t) => [cx + r * Math.cos(t), cy + r * Math.sin(t)];
+    const [x1, y1] = p(R1, a), [x2, y2] = p(R1, a2), [x3, y3] = p(R0, a2), [x4, y4] = p(R0, a);
+    s += `<path d="M${x1} ${y1} A${R1} ${R1} 0 ${la} 1 ${x2} ${y2} L${x3} ${y3} A${R0} ${R0} 0 ${la} 0 ${x4} ${y4} Z" fill="${it.c.c}" stroke="#fff" stroke-width="1" data-n="${esc(it.c.n)}" class="sl" style="cursor:pointer"/>`; a = a2; });
+  s += `<text x="${cx}" y="${cy + 3}" text-anchor="middle" font-size="17" font-weight="600" fill="#1d1d24">${nf(tot)}</text><text x="${cx}" y="${cy + 17}" text-anchor="middle" font-size="8" fill="#8b8b94">Итог, ${UNIT}</text>`;
+  el.innerHTML = svgEl(W, H, s);
+  $$(".sl", el).forEach(p => { const it = items.find(i => i.c.n === p.dataset.n);
+    p.addEventListener("mousemove", e => tip.show(`<div class="t">${esc(it.c.n)}</div><div class="r"><span>Эффект</span><b>${nf(it.v)} ${UNIT}</b></div><div class="r"><span>Доля</span><b>${(it.v / tot * 100).toFixed(1).replace(".", ",")}%</b></div>`, e.clientX, e.clientY));
+    p.addEventListener("mouseleave", tip.hide); p.addEventListener("click", () => { PS.sel = it.c.n; renderPlan(); }); });
+  $("#pdonutnote").textContent = `В круге доли положительного эффекта. Положительный эффект: ${nf(tot)} ${UNIT}, снижение: 0, итог: ${nf(tot)} ${UNIT}`;
+  $("#pdonutleg").innerHTML = items.map(it => `<div class="it ${PS.sel === it.c.n ? "on" : ""}"><b><i style="background:${it.c.c}"></i>${esc(it.c.n)}</b><span>${nf(it.v)} ${UNIT} · ${(it.v / tot * 100).toFixed(2).replace(".", ",")}% положительного эффекта</span></div>`).join("");
+  $("#pdonutfoot").textContent = `Бронирования без новой рекламы в периоде: ${nf(baseSum)}. Положительные эффекты показаны секторами, отрицательные отдельно`;
+}
+function renderChArea(cur, wk) {
+  const el = $("#parea"), n = wk.length, items = CH.filter(c => cur.ch[c.n]);
+  const W = Math.max(360, el.clientWidth), H = 210, L = 44, R = 8, T = 10, B = 22;
+  const stk = Array.from({ length: n }, (_, k) => { let up = 0; return items.map(c => { const v = cur.ch[c.n][k]; const r = [up, up + v]; up += v; return r; }); });
+  const yt = niceTicks(0, Math.max(1, ...stk.map(r => r.length ? r[r.length - 1][1] : 0)) * 1.05, 4), y1 = yt[yt.length - 1];
+  const sx = k => L + (W - L - R) * k / Math.max(1, n - 1), sy = v => T + (H - T - B) * (1 - v / y1);
+  let s = ""; yt.forEach(v => s += `<line x1="${L}" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="#efefed"/><text x="${L - 8}" y="${sy(v) + 3}" font-size="8" fill="#8b8b94" text-anchor="end">${nf(v)}</text>`);
+  items.forEach((c, j) => { const top = stk.map((r, k) => [sx(k), sy(r[j][1])]), bot = stk.map((r, k) => [sx(k), sy(r[j][0])]).reverse(); s += `<path d="${pathOf(top)} L${pathOf(bot).slice(1)} Z" fill="${c.c}" opacity=".92" stroke="#fff" stroke-width=".3"/>`; });
+  const step = Math.max(1, Math.ceil(n / 13)); wk.forEach((t, k) => { if (k % step === 0) s += `<text x="${sx(k)}" y="${H - 6}" font-size="8" fill="#8b8b94" text-anchor="middle">${dDot(new Date(t))}</text>`; });
+  s += `<rect class="hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent"/>`;
+  el.innerHTML = svgEl(W, H, s);
+  hoverIdx(el, { inv: px => (px - L) / (W - L - R) * (n - 1), W }, n, k => `<div class="t">Неделя с ${dLong(new Date(wk[k]))}</div>` + items.slice().sort((a, b) => cur.ch[b.n][k] - cur.ch[a.n][k]).slice(0, 8).map(c => `<div class="r"><span><i style="background:${c.c}"></i>${esc(c.n)}</span><b>${nf(cur.ch[c.n][k])}</b></div>`).join("") + (items.length > 8 ? `<div class="r"><span>Остальные каналы</span><b>${nf(items.slice().sort((a, b) => cur.ch[b.n][k] - cur.ch[a.n][k]).slice(8).reduce((a, c) => a + cur.ch[c.n][k], 0))}</b></div>` : ""));
+}
+function chTotal(c, X, wk) {
+  const ds = PS.dir === 3 ? [0, 1, 2] : [PS.dir], n = wk.length, phase = ((PS.hFrom / DAY) % 97) / 97 * .3, prof = profileOf(c, n, PS.flat[c.n], phase);
+  let inP = 0, post = 0; const wkly = new Array(n + 26).fill(0);
+  ds.forEach(d => { const e = chEff(c, X, PS.res[c.n] || 0, d, prof, n, wk[0]); e.forEach((v, k) => { wkly[k] += v; if (k < n) inP += v; else post += v; }); });
+  return { inP, post, wkly };
+}
+function niceStep(v) { const m = 10 ** Math.floor(Math.log10(v)); return [1, 2, 5, 10].map(k => k * m).find(s => s >= v * .8) || m * 10; }
+function renderStep(wk) {
+  const c = CHM[PS.sel] && PS.inPlan.has(PS.sel) ? CHM[PS.sel] : CH.find(x => PS.inPlan.has(x.n));
+  if (!c) { $("#pstep").classList.add("hidden"); return; } $("#pstep").classList.remove("hidden");
+  const X = PS.vol[c.n] || 0, unit = UNITS[c.unit], n = wk.length;
+  const max = Math.max(c.X0 * 3, c.Xnom * 2, X * 1.2);
+  const pts = []; for (let k = 0; k <= 50; k++) { const x = max * k / 50; pts.push([x, chTotal(c, x, wk).inP]); }
+  const curE = chTotal(c, X, wk);
+  $("#prespsub").textContent = `${c.n} · ${nf(X)} ${c.unit === "rub" ? "₽" : unit}`;
+  const xt = niceTicks(0, max, 6).filter(v => v <= max).map(v => ({ x: v, l: nf(v) }));
+  const g = lineChart($("#presp"), { h: 190, series: [{ pts, color: "#4d5bd4", width: 1.4 }], points: [{ x: X, y: curE.inP, r: 4.5 }], xticks: xt, xTitle: unit, yTitle: UNIT, vline: X, xmin: 0, xmax: max, ymin: 0 });
+  const el = $("#presp"), hit = $(".hit", el); let drag = false;
+  const xAt = e => { const r = $("svg", el).getBoundingClientRect(); return Math.max(0, Math.min(max, g.inv((e.clientX - r.left) * g.W / r.width))); };
+  hit.style.cursor = "pointer";
+  hit.addEventListener("mousemove", e => { const x = xAt(e); tip.show(`<div class="t">${nf(x)} ${c.unit === "rub" ? "₽" : unit}</div><div class="r"><span>Эффект в периоде</span><b>${nf(chTotal(c, x, wk).inP)} ${UNIT}</b></div><div class="note" style="margin-top:4px">Нажатие переносит точку</div>`, e.clientX, e.clientY); if (drag) { PS.vol[c.n] = Math.round(x); refreshSoon(); } });
+  hit.addEventListener("mouseleave", tip.hide);
+  hit.addEventListener("mousedown", e => { drag = true; PS.vol[c.n] = Math.round(xAt(e)); refreshSoon(); e.preventDefault(); });
+  window.addEventListener("mouseup", () => drag = false, { once: true });
+  const step = niceStep(Math.max(X, c.Xnom) * .1), nx = chTotal(c, X + step, wk);
+  const dIn = nx.inP - curE.inP, dPost = nx.post - curE.post;
+  const avg = X > 0 ? (curE.inP + curE.post) / X : (dIn + dPost) / step, ratio = avg > 0 ? (dIn + dPost) / step / avg : 1;
+  const lvl = ratio >= .55 ? ["", "#5c9a2e", "Высокая дополнительная отдача"] : ratio >= .3 ? ["warn", "#c99a1e", "Умеренная дополнительная отдача"] : ["bad", "#b23a3a", "Низкая дополнительная отдача: канал близок к насыщению"];
+  $("#plight").className = "strip " + lvl[0]; $("#plight").innerHTML = `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${lvl[1]};margin-right:8px;vertical-align:middle"></span>${lvl[2]}`;
+  $("#pstepnote").innerHTML = `Добавление ${nf(step)} ${c.unit === "rub" ? "₽" : unit}: <b>${sg(dIn)} ${UNIT}</b> в периоде и <b>${sg(dPost)} ${UNIT}</b> после периода (недель: 26)`;
+  const dw = nx.wkly.map((v, k) => [k, v - curE.wkly[k]]);
+  const all = Array.from({ length: n + 26 }, (_, k) => wk[0] + k * 7 * DAY), st = Math.max(1, Math.ceil((n + 26) * 64 / Math.max(300, $("#pstepch").clientWidth || 600)));
+  const g2 = lineChart($("#pstepch"), { h: 170, series: [{ pts: dw, color: "#4d5bd4", width: 1.3 }], xticks: all.map((t, k) => ({ x: k, l: dDot(new Date(t)) })).filter((_, k) => k % st === 0), xmin: 0, xmax: n + 25, vline: n - .5, vlineLabel: "конец периода", left: 38, ymin: 0 });
+  hoverIdx($("#pstepch"), g2, n + 26, k => `<div class="t">Неделя с ${dLong(new Date(all[k]))}</div><div class="r"><span>Дополнительно</span><b>${dw[k][1].toFixed(1).replace(".", ",")} ${UNIT}</b></div>`);
+}
+// сценарии
+const SKEY = "pa-travel-scenarios-v1";
+function loadSaved() { try { return JSON.parse(localStorage.getItem(SKEY) || "[]"); } catch (e) { return []; } }
+function storeSaved(a) { try { localStorage.setItem(SKEY, JSON.stringify(a)); } catch (e) { toast("Браузер не дал сохранить сценарий"); } }
+function snapshot() { return { dir: PS.dir, start: PS.start, end: PS.end, mode: PS.mode, hFrom: PS.hFrom, hTo: PS.hTo, inPlan: [...PS.inPlan], vol: PS.vol, res: PS.res, price: PS.price, flat: PS.flat, ext: PS.ext }; }
+function applySnap(s) { Object.assign(PS, { ...s, inPlan: new Set(s.inPlan), vol: { ...PS.vol, ...s.vol }, res: { ...PS.res, ...s.res }, price: s.price || {}, flat: s.flat || {}, ext: s.ext || { dem: 0, prod: 0, comp: 0 } }); syncPeriodInputs(); renderPlan(); }
+function renderSaved() {
+  const a = loadSaved(), box = $("#psaved");
+  box.innerHTML = a.length ? a.map((s, i) => `<div class="it"><span>${esc(s.name)}</span><span style="flex:none;color:var(--muted)">${s.at}</span><button class="btn" data-o="${i}">Открыть</button><button class="btn" data-d="${i}">Удалить</button></div>`).join("") : "Сохранённых сценариев пока нет";
+  $$("[data-o]", box).forEach(b => b.onclick = () => { applySnap(a[+b.dataset.o].s); toast("Сценарий открыт"); });
+  $$("[data-d]", box).forEach(b => b.onclick = () => { a.splice(+b.dataset.d, 1); storeSaved(a); renderSaved(); });
+}
+function syncPeriodInputs() { $("#ps").value = dISO(new Date(PS.start)); $("#pe").value = dISO(new Date(PS.end)); $("#phf").value = dISO(new Date(PS.hFrom)); $("#pht").value = dISO(new Date(PS.hTo)); }
+function initPlan() {
+  $$("#ptabs button").forEach((b, i) => b.onclick = () => { PS.dir = i; renderPlan(); });
+  $$("#pmode button").forEach(b => b.onclick = () => { PS.mode = b.dataset.m; renderPlan(); });
+  syncPeriodInputs();
+  const mon = v => { const t = parseISO(v); const wd = (new Date(t).getUTCDay() + 6) % 7; return t - wd * DAY; };
+  $("#papply").onclick = () => { const a = mon($("#ps").value), b = mon($("#pe").value); if (b < a) { toast("Последняя неделя раньше начала периода"); return; } PS.start = a; PS.end = Math.min(b, a + 25 * 7 * DAY); PS.hFrom = mon($("#phf").value); PS.hTo = mon($("#pht").value); PS.mode = "future"; syncPeriodInputs(); renderPlan(); };
+  $("#pall").onclick = () => { CH.forEach(c => { PS.inPlan.add(c.n); if (!(PS.vol[c.n] > 0)) PS.vol[c.n] = c.Xnom; }); renderPlan(); };
+  $("#pnone").onclick = () => { PS.inPlan.clear(); renderPlan(); };
+  $("#preset").onclick = () => { applySnap({ ...INIT, start: PS.start, end: PS.end, mode: PS.mode, hFrom: PS.hFrom, hTo: PS.hTo, dir: PS.dir }); };
+  $$("#pext input").forEach(i => i.oninput = () => { PS.ext[i.dataset.k] = +i.value; refreshSoon(); });
+  $("#psave").onclick = () => { const nm = $("#pname").value.trim() || "Сценарий " + (loadSaved().length + 1); const a = loadSaved(); const d = new Date(); a.unshift({ name: nm, at: pad2(d.getDate()) + "." + pad2(d.getMonth() + 1) + " " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()), s: snapshot() }); storeSaved(a); $("#pname").value = ""; renderSaved(); toast("Сценарий сохранён"); };
+  $("#pjson").onclick = () => saveFile("сценарий_медиаплана.json", JSON.stringify({ name: $("#pname").value.trim() || "Сценарий", s: snapshot() }, null, 2));
+  $("#popen").onclick = () => $("#pfile").click();
+  $("#pfile").onchange = e => { const f = e.target.files[0]; if (!f) return; f.text().then(t => { try { const o = JSON.parse(t); applySnap(o.s || o); toast("Сценарий загружен"); } catch (er) { toast("Файл не похож на сценарий медиаплана"); } }); e.target.value = ""; };
+  $("#pcsv").onclick = () => saveFile("прогноз_по_неделям.csv", "\ufeff" + csvOf(PS._rows.map(r => r.map(v => typeof v === "number" ? Math.round(v) : v))));
+}
+
+// ===== Навигация и запуск =====
+function go(page) {
+  $("#page-dash").classList.toggle("hidden", page !== "dash"); $("#page-plan").classList.toggle("hidden", page !== "plan");
+  $$(".nav").forEach(b => b.classList.toggle("on", b.dataset.page === page));
+  scrollTo(0, 0); page === "dash" ? renderDash() : renderPlan();
+}
+$$("#travel [data-page]").forEach(b => b.onclick = () => go(b.dataset.page));
+$("#help").onclick = () => toast("Дашборд раскладывает бронирования на факторы, планировщик считает прогноз по медиаплану");
+$("#upd").onclick = () => { $("#stat").textContent = "Обновление…"; setTimeout(() => { $("#stat").textContent = "Расчёты проверены · 3 модели"; toast("Данные актуальны"); }, 900); };
+$("#pcsv2").onclick = () => $("#pcsv").click();
+initDash(); initPlan(); renderDash();
+const rerender = () => { if (!$("#page-dash").classList.contains("hidden")) renderDash(); else renderPlan(); };
+let _rz; addEventListener("resize", () => { clearTimeout(_rz); _rz = setTimeout(() => { if ($("#travel").offsetParent !== null || $("#travel").getClientRects().length) rerender(); }, 120); });
+window.TRAVEL = { show: rerender };
+
+})();
+</script>
+</body></html>
